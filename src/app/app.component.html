@@ -1,20 +1,203 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-  <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
+<header role="header" *ngIf="cartItems">
+  <div class="container">
+    <div class="row">
+      <div class="col-8 col-sm-12">
+        <h1 class="shopping-bag-header">Your Shopping Bag</h1>
+      </div>
+      <div class="col-4 d-sm-none">
+        <p class="cart-items cart-items-mobile"><b>{{cartItems.length}}</b> Items</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main role="main" *ngIf="cartItems">
+  <div class="container">
+
+    <div class="cart-header-row-wrap d-none d-sm-block">
+      <div class="row text-uppercase cart-header-row">
+        <div class="col-sm-9">
+          <p class="cart-items"><b>{{cartItems.length}}</b> Items</p>
+        </div>
+        <div class="col-sm-1 cart-column-header text-center"><p>size</p></div>
+        <div class="col-sm-1 cart-column-header text-center"><p>qty</p></div>
+        <div class="col-sm-1 cart-column-header text-center"><p>price</p></div>
+      </div>
+    </div>
+
+    <h1 class="cart-empty" *ngIf="!(cartItems.length > 0)">Your shopping bag is empty!</h1>
+    <div class="line-items-container" *ngIf="cartItems.length > 0">
+
+      <div class="row text-uppercase cart-line-item-row" *ngFor="let item of cartItems; let i = index">
+        <div class="col-12 col-sm-9">
+
+          <div>
+
+            <div>
+              <figure class="float-left cart-product-image">
+                <img [src]="'assets/' + item.p_image + '.jpg'" alt="black t shirt">
+              </figure>
+
+              <div class="cart-product-description">
+                <h3>{{item.p_name}}</h3>
+                <p><span class="text-capitalize">style</span> #: <span class="text-uppercase">{{item.p_style}}</span></p>
+                <p class="text-capitalize">colour: {{item.p_selected_color.name}}</p>
+                <p class="text-capitalize d-sm-none">size: {{item.p_selected_size.code}}</p>
+
+                <p class="text-uppercase d-sm-none cart-line-item-qty-mobile">qty: <span class="qty">{{item.p_quantity}}</span></p>
+                <p class="text-capitalize d-sm-none original-price" *ngIf="item.p_price != item.p_originalprice">
+                  <sup>$</sup><span style="font-size: 18px;"> {{item.p_quantity * item.p_originalprice}}</span></p>
+                <p class="text-capitalize d-sm-none price-mobile"><sup>$</sup><span style="font-size: 18px;"> {{item.p_quantity * item.p_price}}</span></p>
+              </div>
+
+              <div class="clearfix-mobile">
+              </div>
+            </div>
+
+            <div class="text-uppercase line-item-actions float-left">
+              <button (click)="onEditClick(item, i)">edit</button>
+              <button (click)="onRemove(i)">X remove</button>
+              <button>save for later</button>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="col-sm-1 cart-column-header font-weight-bold text-uppercase d-none d-sm-block text-center"><p>{{item.p_selected_size.code}}</p></div>
+        <div class="col-sm-1 cart-column-header font-weight-bold text-uppercase d-none d-sm-block text-center"><p class="qty">{{item.p_quantity}}</p></div>
+        <div class="col-sm-1 cart-column-header font-weight-bold text-uppercase d-none d-sm-block text-center">
+          <p class="original-price" *ngIf="item.p_price != item.p_originalprice"><sup>$</sup>{{item.p_quantity * item.p_originalprice}}</p>
+          <br>
+          <p class="discount-price"><sup>$</sup>{{item.p_quantity * item.p_price}}</p>
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="row" style="margin-top: 20px;" *ngIf="(cartItems.length > 0)">
+      <div class="col-sm-4 d-none d-sm-block">
+        <p style="font-weight: bold;">Need Help</p>
+        <p style="font-weight: bold;">or have question?</p>
+        <br>
+        <p>Call Customer Service at</p>
+        <p>1-800-555-5555</p>
+        <br>
+        <p style="text-decoration: underline">Chat with one of our stylist</p>
+        <br>
+        <p style="text-decoration: underline">See return & exchange policy</p>
+      </div>
+
+      <div class="col-12 col-sm-8">
+
+        <div class="promo-code">
+          <p style="margin-bottom: 8px;">ENTER PROMOTION CODE OR GIFT CARD</p>
+          <input type="text">
+          <button>APPLY</button>
+        </div>
+
+        <div class="subtotal" style="margin-top: 20px;">
+          <div class="row" style="margin: 30px; margin-left: 0;">
+            <div class="col-6"><h6>SUBTOTAL</h6></div>
+            <div class="col-6 text-right"><h6><SUP>$</SUP>{{getSubTotal()}}</h6></div>
+          </div>
+
+          <div class="row" style="margin: 30px; margin-left: 0;">
+            <div class="col-6"><h6>PROMOTION CODE JF10 APPLIED</h6></div>
+            <div class="col-6 text-right"><h6>-  <SUP>$</SUP>7.00 </h6></div>
+          </div>
+
+          <div class="row" style="margin: 30px;margin-left: 0;  border-bottom: 1px solid lightgray; padding-bottom: 30px;">
+            <div class="col-6"><h6>ESTIMATED SHIPPING</h6>
+              <P>You qualify for free shiping because your order is over $50*</P>
+            </div>
+            <div class="col-6 text-right">
+              <h6><sup *ngIf="!(getSubTotal()>50)">$</sup>{{(getSubTotal()>50)? 'FREE' : '5'}}</h6>
+            </div>
+
+          </div>
+
+          <div class="row" style="margin: 30px;margin-left: 0;  border-bottom: 5px solid lightgray; padding-bottom: 30px;">
+            <div class="col-6"><h6>ESTIMATED TOTAL</h6>
+            </div>
+            <div class="col-6 text-right">
+              <h6><h6><SUP>$</SUP>{{getSubTotal() - 7 + (getSubTotal()>50? 0 : 5)}}</h6></h6>
+            </div>
+
+          </div>
+
+
+        </div>
+
+      </div>
+
+
+    </div>
+
+    <div class="row text-right" *ngIf="(cartItems.length > 0)">
+      <div class="col-12">
+        <p class="text-uppercase" class="continue-shopping" style="text-decoration: underline; display: inline-block;">Continue Shopping</p>
+        <button class="checkout-btn">CHECKOUT</button>
+
+      </div>
+
+      <div class="lock">
+        <img src="assets/lock.jpg" alt="">
+        <span>Secure Checkout. Shopping is always safe & secure</span>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div *ngIf="isEditModalVisible"
+     class="modal-overlay">
+  <div class="modal-body" *ngIf="editItem">
+    <button (click)="onModalClose($event)" class="modal-close-btn">X</button>
+
+    <div class="row">
+      <div class="col-12 col-sm-6">
+        <div class="text-center" style="margin: 50px 0;border-top: 6px solid lightgray; padding-top: 40px;">
+
+          <h6 class="text-uppercase" style="margin-bottom: 15px;">{{editItem.p_name}}</h6>
+          <h2></h2>
+          <h2 class="original-price" *ngIf="editItem.p_price != editItem.p_originalprice"><sup>$</sup>{{editItem.p_quantity * editItem.p_originalprice}}</h2>
+          <h2 class="discount-price"><sup>$</sup>{{editItem.p_quantity * editItem.p_price}}</h2>
+
+          <p class="text-uppercase">{{editItem.p_selected_color.name}}</p>
+          <div>
+            <span class="color-box" (click)="onColorSelect(color)"
+                  *ngFor="let color of editItem.p_available_options.colors"
+                  [ngStyle]="{'background-color': color.hexcode}"></span>
+          </div>
+
+          <div class="select-div">
+            <select class="text-uppercase" name="" [value]="editItem.p_selected_size.code" (change)="onSizeChange($event)">
+              <option *ngFor="let size of editItem.p_available_options.sizes"
+                      [value]="size.code">{{size.name}}</option>
+            </select>
+
+            <select class="text-uppercase" [value]="editItem.p_quantity" (change)="onQtyChange($event)">
+              <option class="text-uppercase"
+                      *ngFor="let qty of qtyArray"
+                      [value]="qty">QTY: {{qty}}</option>
+            </select>
+          </div>
+
+          <Button class="modal-edit-btn" (click)="onEditSubmit(editItem)">Edit</Button>
+
+        </div>
+
+      </div>
+
+      <div class="col-12 col-sm-6">
+
+        <figure class="modal-image">
+          <img [src]="'assets/' + editItem.p_image + '.jpg'" alt="">
+        </figure>
+
+      </div>
+    </div>
+  </div>
 </div>
-<h2>Here are some links to help you start: </h2>
-<ul>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://github.com/angular/angular-cli/wiki">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-  </li>
-</ul>
 
